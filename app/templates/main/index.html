@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Collection — Geological Museum{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Rock &amp; Mineral Collection</h1>
+  <p class="hero-sub">Explore our geological specimens. Scan a QR code at the museum to learn more.</p>
+</section>
+
+{% if artifacts %}
+  <div class="card-grid">
+    {% for artifact in artifacts %}
+      <a href="{{ url_for('main.artifact_detail', artifact_id=artifact.id) }}" class="card">
+        <div class="card-image">
+          {% if artifact.card_image %}
+            <img src="{{ url_for('static', filename=artifact.card_image) }}" alt="{{ artifact.display_title() }}">
+          {% else %}
+            <div class="card-placeholder">◆</div>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          <h2>{{ artifact.display_title('en') }}</h2>
+          {% if artifact.title_ka %}
+            <p class="card-title-ka">{{ artifact.title_ka }}</p>
+          {% endif %}
+          <span class="card-link">View specimen →</span>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state">
+    <p>No specimens in the collection yet.</p>
+  </div>
+{% endif %}
+{% endblock %}

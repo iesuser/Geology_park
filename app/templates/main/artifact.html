@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}{{ artifact.display_title() }} — Geological Museum{% endblock %}
+
+{% block content %}
+<article class="artifact-detail">
+  <a href="{{ url_for('main.index') }}" class="back-link">← Back to collection</a>
+
+  <header class="artifact-header">
+    <h1>{{ artifact.display_title('en') }}</h1>
+    {% if artifact.title_ka %}
+      <h2 class="artifact-title-ka">{{ artifact.title_ka }}</h2>
+    {% endif %}
+  </header>
+
+  <div class="artifact-layout">
+    <div class="artifact-photos">
+      {% if artifact.photo1_path %}
+        <figure>
+          <img src="{{ url_for('static', filename=artifact.photo1_path) }}" alt="Photo 1">
+        </figure>
+      {% endif %}
+      {% if artifact.photo2_path %}
+        <figure>
+          <img src="{{ url_for('static', filename=artifact.photo2_path) }}" alt="Photo 2">
+        </figure>
+      {% endif %}
+      {% if not artifact.photo1_path and not artifact.photo2_path %}
+        <div class="photo-placeholder">No photos available</div>
+      {% endif %}
+    </div>
+
+    <div class="artifact-info">
+      {% if artifact.description_en %}
+        <section class="lang-block">
+          <h3>English</h3>
+          <div class="description">{{ artifact.description_en | replace('\n', '<br>') | safe }}</div>
+        </section>
+      {% endif %}
+
+      {% if artifact.description_ka %}
+        <section class="lang-block">
+          <h3>ქართული</h3>
+          <div class="description">{{ artifact.description_ka | replace('\n', '<br>') | safe }}</div>
+        </section>
+      {% endif %}
+
+      {% if not artifact.description_en and not artifact.description_ka %}
+        <p class="no-description">No description available for this specimen.</p>
+      {% endif %}
+
+      {% if artifact.qr_code_path %}
+        <section class="qr-section">
+          <h3>QR Code</h3>
+          <p class="qr-hint">Scan to share this page</p>
+          <img
+            class="qr-image"
+            src="{{ url_for('static', filename=artifact.qr_code_path) }}"
+            alt="QR code for specimen {{ artifact.id }}"
+          >
+        </section>
+      {% endif %}
+    </div>
+  </div>
+</article>
+{% endblock %}
