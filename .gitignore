@@ -1,0 +1,10 @@
+.env
+instance/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+app/static/uploads/*
+!app/static/uploads/.gitkeep
+!app/static/uploads/qrcodes/.gitkeep

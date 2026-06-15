@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Admin — Geological Museum{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+  <h1>Admin Dashboard</h1>
+  <a href="{{ url_for('admin.create') }}" class="btn btn-primary">+ Add Specimen</a>
+</div>
+
+<p class="admin-note">
+  You can assign a specific specimen ID when creating or editing. Changing an ID regenerates its QR code.
+  Deleting a specimen removes its photos and QR code permanently.
+</p>
+
+{% if artifacts %}
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title (EN)</th>
+          <th>Title (KA)</th>
+          <th>Photos</th>
+          <th>Status</th>
+          <th>QR</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for artifact in artifacts %}
+          <tr>
+            <td>{{ artifact.id }}</td>
+            <td>{{ artifact.title_en or '—' }}</td>
+            <td>{{ artifact.title_ka or '—' }}</td>
+            <td>
+              {% if artifact.photo1_path %}1{% endif %}
+              {% if artifact.photo2_path %}{% if artifact.photo1_path %}, {% endif %}2{% endif %}
+              {% if not artifact.photo1_path and not artifact.photo2_path %}—{% endif %}
+            </td>
+            <td>
+              {% if artifact.is_active %}
+                <span class="badge badge-active">Visible</span>
+              {% else %}
+                <span class="badge badge-hidden">Hidden</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if artifact.qr_code_path %}
+                <a href="{{ url_for('static', filename=artifact.qr_code_path) }}" target="_blank">View</a>
+              {% else %}
+                —
+              {% endif %}
+            </td>
+            <td>
+              <a href="{{ url_for('admin.edit', artifact_id=artifact.id) }}" class="btn btn-small">Edit</a>
+              <a href="{{ url_for('main.artifact_detail', artifact_id=artifact.id) }}" class="btn btn-small btn-outline" target="_blank">View</a>
+              <form method="POST" action="{{ url_for('admin.delete', artifact_id=artifact.id) }}" class="inline-form" onsubmit="return confirm('Delete specimen #{{ artifact.id }}? This cannot be undone.');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-small btn-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="empty-state">
+    <p>No specimens yet. <a href="{{ url_for('admin.create') }}">Add the first one</a>.</p>
+  </div>
+{% endif %}
+{% endblock %}

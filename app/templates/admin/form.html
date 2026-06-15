@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}{% if artifact %}Edit{% else %}Create{% endif %} Specimen — Admin{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+  <h1>{% if artifact %}Edit Specimen #{{ artifact.id }}{% else %}Add New Specimen{% endif %}</h1>
+  <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline">← Back</a>
+</div>
+
+<form method="POST" enctype="multipart/form-data" class="form artifact-form">
+  {{ form.hidden_tag() }}
+
+  <fieldset>
+    <legend>Specimen ID</legend>
+    <div class="form-group">
+      {{ form.specimen_id.label }}
+      {{ form.specimen_id(class="form-control", style="max-width: 12rem;") }}
+      <p class="form-hint">
+        {% if artifact %}
+          Change this number to reassign the specimen (e.g. match a museum catalog number). QR code will be regenerated.
+        {% else %}
+          Optional. Leave empty for the next available ID, or enter a specific number.
+        {% endif %}
+      </p>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Titles</legend>
+    <div class="form-row">
+      <div class="form-group">
+        {{ form.title_en.label }}
+        {{ form.title_en(class="form-control") }}
+      </div>
+      <div class="form-group">
+        {{ form.title_ka.label }}
+        {{ form.title_ka(class="form-control") }}
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Descriptions</legend>
+    <div class="form-group">
+      {{ form.description_en.label }}
+      {{ form.description_en(class="form-control", rows=6) }}
+    </div>
+    <div class="form-group">
+      {{ form.description_ka.label }}
+      {{ form.description_ka(class="form-control", rows=6) }}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Photos <span class="optional">(optional)</span></legend>
+
+    <div class="photo-slot">
+      <div class="form-group">
+        {{ form.photo1.label }}
+        {% if artifact and artifact.photo1_path %}
+          <div class="current-photo">
+            <img src="{{ url_for('static', filename=artifact.photo1_path) }}" alt="Current photo 1">
+            <label class="checkbox-label">
+              {{ form.remove_photo1() }} Remove current photo 1
+            </label>
+          </div>
+        {% endif %}
+        {{ form.photo1(class="form-control") }}
+      </div>
+    </div>
+
+    <div class="photo-slot">
+      <div class="form-group">
+        {{ form.photo2.label }}
+        {% if artifact and artifact.photo2_path %}
+          <div class="current-photo">
+            <img src="{{ url_for('static', filename=artifact.photo2_path) }}" alt="Current photo 2">
+            <label class="checkbox-label">
+              {{ form.remove_photo2() }} Remove current photo 2
+            </label>
+          </div>
+        {% endif %}
+        {{ form.photo2(class="form-control") }}
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Visibility</legend>
+    <label class="checkbox-label">
+      {{ form.is_active() }} Show on public home page
+    </label>
+    <p class="form-hint">Uncheck to hide from the public home page without deleting.</p>
+  </fieldset>
+
+  {% if artifact and artifact.qr_code_path %}
+    <fieldset>
+      <legend>QR Code</legend>
+      <p class="form-hint">Points to <code>/{{ artifact.id }}</code>. Regenerated automatically when the ID changes.</p>
+      <img class="qr-preview" src="{{ url_for('static', filename=artifact.qr_code_path) }}" alt="QR code">
+    </fieldset>
+  {% endif %}
+
+  <div class="form-actions">
+    {{ form.submit(class="btn btn-primary") }}
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline">Cancel</a>
+  </div>
+</form>
+{% endblock %}
