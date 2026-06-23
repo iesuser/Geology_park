@@ -9,6 +9,7 @@ from app.services import (
   delete_artifact,
   generate_qr_code,
   handle_photo_update,
+  regenerate_all_qr_codes,
 )
 
 admin_bp = Blueprint("admin", __name__)
@@ -35,6 +36,7 @@ def create():
       artifact = Artifact(
         title_en=form.title_en.data or None,
         title_ka=form.title_ka.data or None,
+        elevation_m=form.elevation_m.data,
         description_en=form.description_en.data or None,
         description_ka=form.description_ka.data or None,
         is_active=form.is_active.data,
@@ -46,6 +48,7 @@ def create():
 
       handle_photo_update(artifact, form.photo1.data, 1, False)
       handle_photo_update(artifact, form.photo2.data, 2, False)
+      handle_photo_update(artifact, form.photo3.data, 3, False)
       artifact.qr_code_path = generate_qr_code(artifact)
       db.session.commit()
       flash(f"Specimen #{artifact.id} created. QR code generated.", "success")
@@ -77,12 +80,14 @@ def edit(artifact_id: int):
 
       artifact.title_en = form.title_en.data or None
       artifact.title_ka = form.title_ka.data or None
+      artifact.elevation_m = form.elevation_m.data
       artifact.description_en = form.description_en.data or None
       artifact.description_ka = form.description_ka.data or None
       artifact.is_active = form.is_active.data
 
       handle_photo_update(artifact, form.photo1.data, 1, form.remove_photo1.data)
       handle_photo_update(artifact, form.photo2.data, 2, form.remove_photo2.data)
+      handle_photo_update(artifact, form.photo3.data, 3, form.remove_photo3.data)
       db.session.commit()
       flash(f"Specimen #{artifact.id} updated.", "success")
       return redirect(url_for("admin.edit", artifact_id=artifact.id))
@@ -105,6 +110,18 @@ def delete(artifact_id: int):
     flash(f"Specimen #{deleted_id} deleted (photos and QR removed).", "success")
   except Exception:
     db.session.rollback()
-    flash(f"Could not delete specimen #{deleted_id}.", "danger")
+  return redirect(url_for("admin.dashboard"))
+
+
+@admin_bp.route("/regenerate-qr-codes", methods=["POST"])
+@login_required
+def regenerate_qr_codes():
+  try:
+    count = regenerate_all_qr_codes()
+    db.session.commit()
+    flash(f"Regenerated {count} QR code{'s' if count != 1 else ''}.", "success")
+  except Exception:
+    db.session.rollback()
+    flash("Could not regenerate QR codes.", "danger")
 
   return redirect(url_for("admin.dashboard"))

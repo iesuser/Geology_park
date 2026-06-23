@@ -8,6 +8,7 @@ def delete_artifact(artifact: Artifact) -> None:
   """Delete specimen photos, QR code file, and database record."""
   remove_photo(artifact, 1)
   remove_photo(artifact, 2)
+  remove_photo(artifact, 3)
   if artifact.qr_code_path:
     delete_file(artifact.qr_code_path)
   db.session.delete(artifact)
@@ -32,10 +33,12 @@ def change_artifact_id(artifact: Artifact, new_id: int) -> Artifact:
     id=new_id,
     title_en=artifact.title_en,
     title_ka=artifact.title_ka,
+    elevation_m=artifact.elevation_m,
     description_en=artifact.description_en,
     description_ka=artifact.description_ka,
     photo1_path=artifact.photo1_path,
     photo2_path=artifact.photo2_path,
+    photo3_path=artifact.photo3_path,
     is_active=artifact.is_active,
     created_at=artifact.created_at,
   )

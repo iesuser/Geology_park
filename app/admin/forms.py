@@ -12,6 +12,10 @@ class ArtifactForm(FlaskForm):
   )
   title_en = StringField("Title (English)", validators=[Optional(), Length(max=200)])
   title_ka = StringField("Title (Georgian)", validators=[Optional(), Length(max=200)])
+  elevation_m = IntegerField(
+    "Elevation (meters above sea level)",
+    validators=[Optional(), NumberRange(min=0, max=9000)],
+  )
   description_en = TextAreaField(
     "Description (English)", validators=[Optional(), Length(max=5000)]
   )
@@ -32,7 +36,15 @@ class ArtifactForm(FlaskForm):
       FileAllowed(["jpg", "jpeg", "png", "webp", "gif"], "Images only."),
     ],
   )
+  photo3 = FileField(
+    "Photo 3",
+    validators=[
+      Optional(),
+      FileAllowed(["jpg", "jpeg", "png", "webp", "gif"], "Images only."),
+    ],
+  )
   remove_photo1 = BooleanField("Remove photo 1")
   remove_photo2 = BooleanField("Remove photo 2")
+  remove_photo3 = BooleanField("Remove photo 3")
   is_active = BooleanField("Visible on home page", default=True)
   submit = SubmitField("Save")

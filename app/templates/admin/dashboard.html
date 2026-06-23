@@ -5,7 +5,18 @@
 {% block content %}
 <div class="admin-header">
   <h1>Admin Dashboard</h1>
-  <a href="{{ url_for('admin.create') }}" class="btn btn-primary">+ Add Specimen</a>
+  <div class="admin-header-actions">
+    <form
+      method="POST"
+      action="{{ url_for('admin.regenerate_qr_codes') }}"
+      class="inline-form"
+      onsubmit="return confirm('Regenerate QR codes for all specimens? Existing QR image files will be replaced.');"
+    >
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn btn-outline">Regenerate QR Codes</button>
+    </form>
+    <a href="{{ url_for('admin.create') }}" class="btn btn-primary">+ Add Specimen</a>
+  </div>
 </div>
 
 <p class="admin-note">

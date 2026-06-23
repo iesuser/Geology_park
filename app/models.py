@@ -22,8 +22,10 @@ class Artifact(db.Model):
   title_ka = db.Column(db.String(200), nullable=True)
   description_en = db.Column(db.Text, nullable=True)
   description_ka = db.Column(db.Text, nullable=True)
+  elevation_m = db.Column(db.Integer, nullable=True)
   photo1_path = db.Column(db.String(500), nullable=True)
   photo2_path = db.Column(db.String(500), nullable=True)
+  photo3_path = db.Column(db.String(500), nullable=True)
   qr_code_path = db.Column(db.String(500), nullable=True)
   is_active = db.Column(db.Boolean, default=True, nullable=False)
   created_at = db.Column(
@@ -54,6 +56,7 @@ class Artifact(db.Model):
         self.description_ka,
         self.photo1_path,
         self.photo2_path,
+        self.photo3_path,
       ]
     )
 

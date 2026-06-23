@@ -6,7 +6,7 @@ from app.services.file_service import (
   remove_photo,
   save_upload,
 )
-from app.services.qr_service import generate_qr_code
+from app.services.qr_service import generate_qr_code, regenerate_all_qr_codes, regenerate_qr_code
 
 __all__ = [
   "allowed_file",
@@ -15,6 +15,8 @@ __all__ = [
   "delete_file",
   "generate_qr_code",
   "handle_photo_update",
+  "regenerate_all_qr_codes",
+  "regenerate_qr_code",
   "remove_photo",
   "save_upload",
 ]

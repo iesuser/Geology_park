@@ -28,6 +28,7 @@
 
   <fieldset>
     <legend>Titles</legend>
+    <p class="form-hint">Use a pipe to separate rock name and geological period, e.g. <code>TUFF-BRECCIA | MIDDLE EOCENE</code></p>
     <div class="form-row">
       <div class="form-group">
         {{ form.title_en.label }}
@@ -37,6 +38,11 @@
         {{ form.title_ka.label }}
         {{ form.title_ka(class="form-control") }}
       </div>
+    </div>
+    <div class="form-group">
+      {{ form.elevation_m.label }}
+      {{ form.elevation_m(class="form-control", style="max-width: 12rem;") }}
+      <p class="form-hint">Shown in the yellow elevation badge on the public page.</p>
     </div>
   </fieldset>
 
@@ -54,10 +60,11 @@
 
   <fieldset>
     <legend>Photos <span class="optional">(optional)</span></legend>
+    <p class="form-hint">Photo 1 is the rock outcrop (top). Photo 2 is the sampling-site map (bottom). Photo 3 is the Cenozoic timescale panel (middle-right).</p>
 
     <div class="photo-slot">
       <div class="form-group">
-        {{ form.photo1.label }}
+        {{ form.photo1.label }} <span class="optional">— rock outcrop</span>
         {% if artifact and artifact.photo1_path %}
           <div class="current-photo">
             <img src="{{ url_for('static', filename=artifact.photo1_path) }}" alt="Current photo 1">
@@ -72,7 +79,7 @@
 
     <div class="photo-slot">
       <div class="form-group">
-        {{ form.photo2.label }}
+        {{ form.photo2.label }} <span class="optional">— location map</span>
         {% if artifact and artifact.photo2_path %}
           <div class="current-photo">
             <img src="{{ url_for('static', filename=artifact.photo2_path) }}" alt="Current photo 2">
@@ -82,6 +89,21 @@
           </div>
         {% endif %}
         {{ form.photo2(class="form-control") }}
+      </div>
+    </div>
+
+    <div class="photo-slot">
+      <div class="form-group">
+        {{ form.photo3.label }} <span class="optional">— cenozoic chart</span>
+        {% if artifact and artifact.photo3_path %}
+          <div class="current-photo">
+            <img src="{{ url_for('static', filename=artifact.photo3_path) }}" alt="Current photo 3">
+            <label class="checkbox-label">
+              {{ form.remove_photo3() }} Remove current photo 3
+            </label>
+          </div>
+        {% endif %}
+        {{ form.photo3(class="form-control") }}
       </div>
     </div>
   </fieldset>
