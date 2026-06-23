@@ -700,6 +700,136 @@ legend {
   border: 2px solid var(--color-accent);
 }
 
+.photo-manager {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.photo-manager-create-note {
+  margin-top: 0.75rem;
+  padding: 1rem;
+  border: 1px dashed var(--color-border);
+  background: var(--color-surface-raised);
+}
+
+.photo-manager-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+}
+
+.photo-manager-slot.is-busy {
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.photo-manager-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.photo-manager-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.photo-manager-subtitle {
+  color: var(--color-muted);
+  font-size: 0.82rem;
+}
+
+.photo-manager-preview {
+  position: relative;
+  min-height: 180px;
+  background: #0f1414;
+  border: 2px solid var(--color-border);
+  overflow: hidden;
+}
+
+.photo-manager-slot.has-photo .photo-manager-preview {
+  border-color: var(--color-accent);
+}
+
+.photo-manager-image {
+  display: none;
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+.photo-manager-slot.has-photo .photo-manager-image {
+  display: block;
+}
+
+.photo-manager-empty {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 180px;
+  padding: 1.5rem;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.photo-manager-slot:not(.has-photo) .photo-manager-empty {
+  display: flex;
+}
+
+.photo-manager-empty-icon {
+  font-size: 1.5rem;
+  color: var(--color-accent);
+  opacity: 0.7;
+}
+
+.photo-manager-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.photo-manager-toolbar .btn {
+  flex: 1 1 auto;
+  min-width: 7rem;
+  text-align: center;
+}
+
+.photo-manager-toolbar .photo-manager-remove {
+  flex: 1 1 100%;
+}
+
+.photo-manager-filename {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.82rem;
+  word-break: break-all;
+}
+
+.photo-manager-status {
+  margin: 0;
+  font-size: 0.82rem;
+  min-height: 1.1rem;
+}
+
+.photo-manager-status.is-success {
+  color: var(--color-success);
+}
+
+.photo-manager-status.is-error {
+  color: var(--color-danger);
+}
+
 .form-actions {
   display: flex;
   gap: 0.75rem;
@@ -820,6 +950,190 @@ legend {
   letter-spacing: 0.04em;
 }
 
+.admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.admin-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.75rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.admin-action:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.admin-action-edit {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(245, 197, 24, 0.08);
+}
+
+.admin-action-edit:hover {
+  background: rgba(245, 197, 24, 0.16);
+  color: var(--color-accent);
+}
+
+.admin-action-preview:hover {
+  background: var(--color-surface);
+}
+
+.admin-action-delete {
+  border-color: rgba(224, 90, 90, 0.45);
+  color: #f08a8a;
+  background: rgba(224, 90, 90, 0.08);
+}
+
+.admin-action-delete:hover {
+  border-color: var(--color-danger);
+  color: #ffd0d0;
+  background: rgba(224, 90, 90, 0.16);
+}
+
+.admin-qr-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.75rem;
+  font: inherit;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-accent);
+  background: rgba(245, 197, 24, 0.08);
+  border: 1px solid var(--color-accent);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.admin-qr-trigger:hover {
+  background: rgba(245, 197, 24, 0.16);
+  color: var(--color-accent-dark);
+}
+
+body.admin-modal-open {
+  overflow: hidden;
+}
+
+.admin-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.admin-modal[hidden] {
+  display: none;
+}
+
+.admin-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.admin-modal-dialog {
+  position: relative;
+  width: min(420px, 100%);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow);
+}
+
+.admin-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-modal-header h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-muted);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+}
+
+.admin-modal-close:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.admin-modal-body {
+  padding: 1.25rem;
+}
+
+.admin-modal-label {
+  margin: 0 0 1rem;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.admin-modal-qr-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: #122827;
+  border: 4px solid var(--color-accent);
+}
+
+.admin-modal-qr-frame img {
+  display: block;
+  width: min(280px, 100%);
+  height: auto;
+}
+
+.admin-modal-footer {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem 1.25rem;
+  border-top: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
 .badge {
   display: inline-block;
   padding: 0.2rem 0.6rem;
@@ -862,5 +1176,5 @@ code {
   height: 160px;
   border: 4px solid var(--color-accent);
   padding: 0.5rem;
-  background: white;
+  background: #122827;
 }

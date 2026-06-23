@@ -62,50 +62,57 @@
     <legend>Photos <span class="optional">(optional)</span></legend>
     <p class="form-hint">Photo 1 is the rock outcrop (top). Photo 2 is the sampling-site map (bottom). Photo 3 is the Cenozoic timescale panel (middle-right).</p>
 
-    <div class="photo-slot">
-      <div class="form-group">
-        {{ form.photo1.label }} <span class="optional">— rock outcrop</span>
-        {% if artifact and artifact.photo1_path %}
-          <div class="current-photo">
-            <img src="{{ url_for('static', filename=artifact.photo1_path) }}" alt="Current photo 1">
-            <label class="checkbox-label">
-              {{ form.remove_photo1() }} Remove current photo 1
-            </label>
-          </div>
-        {% endif %}
-        {{ form.photo1(class="form-control") }}
-      </div>
-    </div>
+    {% if artifact %}
+      <div class="photo-manager" data-artifact-id="{{ artifact.id }}">
+        {% for slot, title, subtitle in [
+          (1, 'Photo 1', 'rock outcrop'),
+          (2, 'Photo 2', 'location map'),
+          (3, 'Photo 3', 'cenozoic chart'),
+        ] %}
+          {% set photo_path = [artifact.photo1_path, artifact.photo2_path, artifact.photo3_path][slot - 1] %}
+          <div
+            class="photo-manager-slot{% if photo_path %} has-photo{% endif %}"
+            data-slot="{{ slot }}"
+            data-upload-url="{{ url_for('admin.upload_artifact_photo', artifact_id=artifact.id, slot=slot) }}"
+            data-remove-url="{{ url_for('admin.remove_artifact_photo', artifact_id=artifact.id, slot=slot) }}"
+          >
+            <div class="photo-manager-head">
+              <h3 class="photo-manager-title">{{ title }}</h3>
+              <span class="photo-manager-subtitle">{{ subtitle }}</span>
+            </div>
 
-    <div class="photo-slot">
-      <div class="form-group">
-        {{ form.photo2.label }} <span class="optional">— location map</span>
-        {% if artifact and artifact.photo2_path %}
-          <div class="current-photo">
-            <img src="{{ url_for('static', filename=artifact.photo2_path) }}" alt="Current photo 2">
-            <label class="checkbox-label">
-              {{ form.remove_photo2() }} Remove current photo 2
-            </label>
-          </div>
-        {% endif %}
-        {{ form.photo2(class="form-control") }}
-      </div>
-    </div>
+            <div class="photo-manager-preview">
+              <img
+                class="photo-manager-image"
+                src="{% if photo_path %}{{ url_for('static', filename=photo_path) }}{% endif %}"
+                alt=""
+              >
+              <div class="photo-manager-empty">
+                <span class="photo-manager-empty-icon">◇</span>
+                <span>No photo uploaded</span>
+              </div>
+            </div>
 
-    <div class="photo-slot">
-      <div class="form-group">
-        {{ form.photo3.label }} <span class="optional">— cenozoic chart</span>
-        {% if artifact and artifact.photo3_path %}
-          <div class="current-photo">
-            <img src="{{ url_for('static', filename=artifact.photo3_path) }}" alt="Current photo 3">
-            <label class="checkbox-label">
-              {{ form.remove_photo3() }} Remove current photo 3
-            </label>
+            <div class="photo-manager-toolbar">
+              <input
+                type="file"
+                class="photo-manager-input"
+                accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+                hidden
+              >
+              <button type="button" class="btn btn-outline photo-manager-choose">Choose Image</button>
+              <button type="button" class="btn btn-primary photo-manager-upload" disabled>Upload</button>
+              <button type="button" class="admin-action admin-action-delete photo-manager-remove" {% if not photo_path %}hidden{% endif %}>Remove</button>
+            </div>
+
+            <p class="photo-manager-filename" aria-live="polite"></p>
+            <p class="photo-manager-status" aria-live="polite"></p>
           </div>
-        {% endif %}
-        {{ form.photo3(class="form-control") }}
+        {% endfor %}
       </div>
-    </div>
+    {% else %}
+      <p class="form-hint photo-manager-create-note">Save the specimen first, then upload photos here on the edit page.</p>
+    {% endif %}
   </fieldset>
 
   <fieldset>
@@ -129,4 +136,10 @@
     <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline">Cancel</a>
   </div>
 </form>
+{% endblock %}
+
+{% block scripts %}
+  {% if artifact %}
+    <script src="{{ url_for('static', filename='js/admin-form.js') }}"></script>
+  {% endif %}
 {% endblock %}
