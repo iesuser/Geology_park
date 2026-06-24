@@ -5,7 +5,18 @@
 {% block content %}
 <div class="admin-header">
   <h1>Admin Dashboard</h1>
-  <a href="{{ url_for('admin.create') }}" class="btn btn-primary">+ Add Specimen</a>
+  <div class="admin-header-actions">
+    <form
+      method="POST"
+      action="{{ url_for('admin.regenerate_qr_codes') }}"
+      class="inline-form"
+      onsubmit="return confirm('Regenerate QR codes for all specimens? Existing QR image files will be replaced.');"
+    >
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn btn-outline">Regenerate QR Codes</button>
+    </form>
+    <a href="{{ url_for('admin.create') }}" class="btn btn-primary">+ Add Specimen</a>
+  </div>
 </div>
 
 <p class="admin-note">
@@ -21,7 +32,6 @@
           <th>ID</th>
           <th>Title (EN)</th>
           <th>Title (KA)</th>
-          <th>Photos</th>
           <th>Status</th>
           <th>QR</th>
           <th>Actions</th>
@@ -34,11 +44,6 @@
             <td>{{ artifact.title_en or '—' }}</td>
             <td>{{ artifact.title_ka or '—' }}</td>
             <td>
-              {% if artifact.photo1_path %}1{% endif %}
-              {% if artifact.photo2_path %}{% if artifact.photo1_path %}, {% endif %}2{% endif %}
-              {% if not artifact.photo1_path and not artifact.photo2_path %}—{% endif %}
-            </td>
-            <td>
               {% if artifact.is_active %}
                 <span class="badge badge-active">Visible</span>
               {% else %}
@@ -47,27 +52,61 @@
             </td>
             <td>
               {% if artifact.qr_code_path %}
-                <a href="{{ url_for('static', filename=artifact.qr_code_path) }}" target="_blank">View</a>
+                <button
+                  type="button"
+                  class="admin-qr-trigger"
+                  data-qr-url="{{ url_for('static', filename=artifact.qr_code_path) }}"
+                  data-qr-label="Specimen #{{ artifact.id }}{% if artifact.title_en %} — {{ artifact.title_en }}{% endif %}"
+                  data-qr-filename="specimen-{{ artifact.id }}-qr.png"
+                >
+                  View QR
+                </button>
               {% else %}
                 —
               {% endif %}
             </td>
             <td>
-              <a href="{{ url_for('admin.edit', artifact_id=artifact.id) }}" class="btn btn-small">Edit</a>
-              <a href="{{ url_for('main.artifact_detail', artifact_id=artifact.id) }}" class="btn btn-small btn-outline" target="_blank">View</a>
-              <form method="POST" action="{{ url_for('admin.delete', artifact_id=artifact.id) }}" class="inline-form" onsubmit="return confirm('Delete specimen #{{ artifact.id }}? This cannot be undone.');">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button type="submit" class="btn btn-small btn-danger">Delete</button>
-              </form>
+              <div class="admin-actions">
+                <a href="{{ url_for('admin.edit', artifact_id=artifact.id) }}" class="admin-action admin-action-edit">Edit</a>
+                <a href="{{ url_for('main.artifact_detail', artifact_id=artifact.id) }}" class="admin-action admin-action-preview" target="_blank" rel="noopener noreferrer">Preview</a>
+                <form method="POST" action="{{ url_for('admin.delete', artifact_id=artifact.id) }}" class="inline-form" onsubmit="return confirm('Delete specimen #{{ artifact.id }}? This cannot be undone.');">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" class="admin-action admin-action-delete">Delete</button>
+                </form>
+              </div>
             </td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
+
+  <div class="admin-modal" id="qr-modal" hidden>
+    <div class="admin-modal-backdrop" data-qr-modal-close></div>
+    <div class="admin-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
+      <div class="admin-modal-header">
+        <h2 id="qr-modal-title">QR Code</h2>
+        <button type="button" class="admin-modal-close" data-qr-modal-close aria-label="Close">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <p class="admin-modal-label" id="qr-modal-label"></p>
+        <div class="admin-modal-qr-frame">
+          <img id="qr-modal-image" src="" alt="QR code preview">
+        </div>
+      </div>
+      <div class="admin-modal-footer">
+        <a id="qr-modal-download" href="" download class="btn btn-primary">Download PNG</a>
+        <button type="button" class="btn btn-outline" data-qr-modal-close>Close</button>
+      </div>
+    </div>
+  </div>
 {% else %}
   <div class="empty-state">
     <p>No specimens yet. <a href="{{ url_for('admin.create') }}">Add the first one</a>.</p>
   </div>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}

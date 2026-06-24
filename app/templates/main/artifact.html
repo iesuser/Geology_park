@@ -1,65 +1,137 @@
-{% extends "base.html" %}
+{% extends "base_banner.html" %}
+
+{% macro render_title(title) -%}
+  {% if title and '|' in title %}
+    {% set parts = title.split('|', 1) %}
+    <div class="banner-title-row">
+      <h1 class="banner-title">{{ parts[0] | trim }}</h1>
+      <span class="title-sep" aria-hidden="true">|</span>
+      <span class="title-period">{{ parts[1] | trim }}</span>
+    </div>
+  {% elif title %}
+    <h1 class="banner-title">{{ title }}</h1>
+  {% endif %}
+{%- endmacro %}
 
 {% block title %}{{ artifact.display_title() }} — Geological Museum{% endblock %}
 
 {% block content %}
-<article class="artifact-detail">
-  <a href="{{ url_for('main.index') }}" class="back-link">← Back to collection</a>
+<article class="banner-page">
+  <div class="banner-grid">
+    <aside class="banner-visual" aria-label="Specimen visuals">
+      <div class="banner-visual-panel">
+        <div class="banner-photo-wrap">
+          {% if artifact.photo1_path %}
+            <img
+              class="banner-rock-photo"
+              src="{{ url_for('static', filename=artifact.photo1_path) }}"
+              alt="{{ artifact.display_title() }} outcrop"
+            >
+          {% else %}
+            <div class="banner-photo-placeholder" aria-hidden="true">◆</div>
+          {% endif %}
+        </div>
 
-  <header class="artifact-header">
-    <h1>{{ artifact.display_title('en') }}</h1>
-    {% if artifact.title_ka %}
-      <h2 class="artifact-title-ka">{{ artifact.title_ka }}</h2>
-    {% endif %}
-  </header>
+        <div class="banner-middle-band">
+          {% if artifact.qr_code_path %}
+            <div class="banner-qr-block">
+              <div class="banner-qr-stack">
+                <fieldset class="banner-qr-fieldset">
+                  <legend class="scan-label">SCAN ME</legend>
+                  <img
+                    src="{{ url_for('static', filename=artifact.qr_code_path) }}"
+                    alt="QR code for this specimen"
+                  >
+                </fieldset>
+              </div>
+            </div>
+          {% else %}
+            <div class="banner-qr-block banner-qr-block--empty" aria-hidden="true"></div>
+          {% endif %}
 
-  <div class="artifact-layout">
-    <div class="artifact-photos">
-      {% if artifact.photo1_path %}
-        <figure>
-          <img src="{{ url_for('static', filename=artifact.photo1_path) }}" alt="Photo 1">
-        </figure>
-      {% endif %}
-      {% if artifact.photo2_path %}
-        <figure>
-          <img src="{{ url_for('static', filename=artifact.photo2_path) }}" alt="Photo 2">
-        </figure>
-      {% endif %}
-      {% if not artifact.photo1_path and not artifact.photo2_path %}
-        <div class="photo-placeholder">No photos available</div>
-      {% endif %}
-    </div>
+          <div class="banner-timescale">
+            {% if artifact.photo3_path %}
+              <img
+                src="{{ url_for('static', filename=artifact.photo3_path) }}"
+                alt="Cenozoic geological timescale chart"
+              >
+            {% else %}
+              <img
+                src="{{ url_for('static', filename='img/geological-timescale.svg') }}"
+                alt="Cenozoic geological timescale chart"
+              >
+            {% endif %}
+          </div>
+        </div>
 
-    <div class="artifact-info">
-      {% if artifact.description_en %}
-        <section class="lang-block">
-          <h3>English</h3>
-          <div class="description">{{ artifact.description_en | replace('\n', '<br>') | safe }}</div>
+        <div class="banner-map-wrap">
+          {% if artifact.photo2_path %}
+            <img
+              class="banner-map"
+              src="{{ url_for('static', filename=artifact.photo2_path) }}"
+              alt="Sampling site location map"
+            >
+          {% else %}
+            <div class="banner-map-placeholder">
+              <span>SAMPLING SITE</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </aside>
+
+    <div class="banner-content">
+      <div class="banner-content-inner">
+      {% if artifact.title_ka or artifact.description_ka %}
+        <section class="banner-lang banner-lang-ka" lang="ka">
+          {% if artifact.title_ka %}
+            <h1 class="banner-title">{{ render_title(artifact.title_ka) }}</h1>
+          {% endif %}
+          {% if artifact.elevation_m is not none %}
+            <p class="elevation-badge">სიმაღლე ზღვის დონიდან - {{ artifact.elevation_m }} მ</p>
+          {% endif %}
+          {% if artifact.description_ka %}
+            <div class="banner-text">{{ artifact.description_ka | replace('\n', '<br>') | safe }}</div>
+          {% endif %}
         </section>
       {% endif %}
 
-      {% if artifact.description_ka %}
-        <section class="lang-block">
-          <h3>ქართული</h3>
-          <div class="description">{{ artifact.description_ka | replace('\n', '<br>') | safe }}</div>
+      {% if (artifact.title_ka or artifact.description_ka) and (artifact.title_en or artifact.description_en) %}
+        <hr class="banner-divider">
+      {% endif %}
+
+      {% if artifact.title_en or artifact.description_en %}
+        <section class="banner-lang banner-lang-en" lang="en">
+          {% if artifact.title_en %}
+            <h1 class="banner-title">{{ render_title(artifact.title_en) }}</h1>
+          {% endif %}
+          {% if artifact.elevation_m is not none %}
+            <p class="elevation-badge">ELEVATION ABOVE SEA LEVEL - {{ artifact.elevation_m }} M</p>
+          {% endif %}
+          {% if artifact.description_en %}
+            <div class="banner-text">{{ artifact.description_en | replace('\n', '<br>') | safe }}</div>
+          {% endif %}
         </section>
       {% endif %}
 
-      {% if not artifact.description_en and not artifact.description_ka %}
-        <p class="no-description">No description available for this specimen.</p>
+      {% if not artifact.title_en and not artifact.title_ka and not artifact.description_en and not artifact.description_ka %}
+        <section class="banner-lang banner-lang-en">
+          <p class="banner-text banner-empty">No description available for this specimen.</p>
+        </section>
       {% endif %}
 
-      {% if artifact.qr_code_path %}
-        <section class="qr-section">
-          <h3>QR Code</h3>
-          <p class="qr-hint">Scan to share this page</p>
+      </div>
+
+      <footer class="banner-footer">
+        <a href="{{ site_footer_url }}" class="banner-footer-link" target="_blank" rel="noopener noreferrer">
           <img
-            class="qr-image"
-            src="{{ url_for('static', filename=artifact.qr_code_path) }}"
-            alt="QR code for specimen {{ artifact.id }}"
+            class="banner-logo"
+            src="{{ url_for('static', filename='img/iliauni_logo.png') }}?v=1"
+            alt="Ilia State University"
           >
-        </section>
-      {% endif %}
+          <span>{{ site_footer_label }}</span>
+        </a>
+      </footer>
     </div>
   </div>
 </article>

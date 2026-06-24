@@ -5,7 +5,7 @@
 {% block content %}
 <section class="hero">
   <h1>Rock &amp; Mineral Collection</h1>
-  <p class="hero-sub">Explore our geological specimens. Scan a QR code at the museum to learn more.</p>
+  <p class="hero-sub">Scan a QR code at the geological park to explore each specimen. Georgian and English information is available for every site.</p>
 </section>
 
 {% if artifacts %}
@@ -24,7 +24,7 @@
           {% if artifact.title_ka %}
             <p class="card-title-ka">{{ artifact.title_ka }}</p>
           {% endif %}
-          <span class="card-link">View specimen →</span>
+          <span class="card-link">View specimen</span>
         </div>
       </a>
     {% endfor %}
