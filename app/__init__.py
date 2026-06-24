@@ -26,7 +26,32 @@ def create_app(config_class: type[Config] = Config) -> Flask:
   app.register_blueprint(auth_bp, url_prefix="/auth")
   app.register_blueprint(admin_bp, url_prefix="/admin")
 
+  @app.context_processor
+  def inject_site_config():
+    return {
+      "site_footer_label": app.config["SITE_FOOTER_LABEL"],
+      "site_footer_url": app.config["SITE_FOOTER_URL"],
+    }
+
   with app.app_context():
     db.create_all()
+    _ensure_schema_updates()
 
   return app
+
+
+def _ensure_schema_updates() -> None:
+  """Add new columns to existing SQLite databases without Flask-Migrate."""
+  from sqlalchemy import inspect, text
+
+  inspector = inspect(db.engine)
+  if "artifacts" not in inspector.get_table_names():
+    return
+
+  columns = {col["name"] for col in inspector.get_columns("artifacts")}
+  if "elevation_m" not in columns:
+    with db.engine.begin() as conn:
+      conn.execute(text("ALTER TABLE artifacts ADD COLUMN elevation_m INTEGER"))
+  if "photo3_path" not in columns:
+    with db.engine.begin() as conn:
+      conn.execute(text("ALTER TABLE artifacts ADD COLUMN photo3_path VARCHAR(500)"))

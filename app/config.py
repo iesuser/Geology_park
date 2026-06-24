@@ -19,9 +19,13 @@ class Config:
   ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin")
 
   BASE_URL = os.environ.get("BASE_URL", "http://localhost:5000").rstrip("/")
+  SITE_FOOTER_LABEL = os.environ.get("SITE_FOOTER_LABEL", "IES.ILIAUNI.EDU.GE")
+  SITE_FOOTER_URL = os.environ.get("SITE_FOOTER_URL", "https://ies.iliauni.edu.ge")
 
   UPLOAD_FOLDER = BASE_DIR / "app" / "static" / "uploads"
   QR_FOLDER = UPLOAD_FOLDER / "qrcodes"
+  QR_FILL_COLOR = "white"
+  QR_BACK_COLOR = "transparent"
   ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp", "gif"}
   MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10 MB
 
