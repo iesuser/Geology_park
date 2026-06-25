@@ -33,22 +33,6 @@
         </div>
 
         <div class="banner-middle-band">
-          {% if artifact.qr_code_path %}
-            <div class="banner-qr-block">
-              <div class="banner-qr-stack">
-                <fieldset class="banner-qr-fieldset">
-                  <legend class="scan-label">SCAN ME</legend>
-                  <img
-                    src="{{ url_for('static', filename=artifact.qr_code_path) }}"
-                    alt="QR code for this specimen"
-                  >
-                </fieldset>
-              </div>
-            </div>
-          {% else %}
-            <div class="banner-qr-block banner-qr-block--empty" aria-hidden="true"></div>
-          {% endif %}
-
           <div class="banner-timescale">
             {% if artifact.photo3_path %}
               <img
