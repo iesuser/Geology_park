@@ -1,3 +1,5 @@
+from urllib.parse import urljoin, urlparse
+
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import login_required, login_user, logout_user
 from app.extensions import login_manager
@@ -26,16 +28,24 @@ def login():
       login_user(AdminUser(username))
       flash("Logged in successfully.", "success")
       next_page = request.args.get("next")
-      return redirect(next_page or url_for("admin.dashboard"))
+      if next_page and _is_safe_redirect_url(next_page):
+        return redirect(next_page)
+      return redirect(url_for("admin.dashboard"))
 
     flash("Invalid username or password.", "danger")
 
   return render_template("auth/login.html")
 
 
-@auth_bp.route("/logout")
+@auth_bp.route("/logout", methods=["POST"])
 @login_required
 def logout():
   logout_user()
   flash("You have been logged out.", "info")
   return redirect(url_for("main.index"))
+
+
+def _is_safe_redirect_url(target: str) -> bool:
+  host_url = urlparse(request.host_url)
+  test_url = urlparse(urljoin(request.host_url, target))
+  return test_url.scheme in {"http", "https"} and host_url.netloc == test_url.netloc

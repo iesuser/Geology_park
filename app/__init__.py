@@ -3,6 +3,7 @@ from pathlib import Path
 from flask import Flask
 
 from app.config import Config
+from app.commands import init_db
 from app.extensions import csrf, db, login_manager
 
 
@@ -25,6 +26,7 @@ def create_app(config_class: type[Config] = Config) -> Flask:
   app.register_blueprint(main_bp)
   app.register_blueprint(auth_bp, url_prefix="/auth")
   app.register_blueprint(admin_bp, url_prefix="/admin")
+  app.cli.add_command(init_db)
 
   @app.context_processor
   def inject_site_config():
