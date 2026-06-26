@@ -17,52 +17,44 @@
 
 {% block content %}
 <article class="banner-page">
-  <div class="banner-grid">
+  {% set has_any_visual = artifact.photo1_path or artifact.photo2_path or artifact.photo3_path %}
+  <div class="banner-grid{% if not has_any_visual %} banner-grid--no-visual{% endif %}">
+    {% if has_any_visual %}
     <aside class="banner-visual" aria-label="Specimen visuals">
       <div class="banner-visual-panel">
+        {% if artifact.photo1_path %}
         <div class="banner-photo-wrap">
-          {% if artifact.photo1_path %}
-            <img
-              class="banner-rock-photo"
-              src="{{ url_for('static', filename=artifact.photo1_path) }}"
-              alt="{{ artifact.display_title() }} outcrop"
-            >
-          {% else %}
-            <div class="banner-photo-placeholder" aria-hidden="true">◆</div>
-          {% endif %}
+          <img
+            class="banner-rock-photo"
+            src="{{ url_for('static', filename=artifact.photo1_path) }}"
+            alt="{{ artifact.display_title() }} outcrop"
+          >
         </div>
+        {% endif %}
 
+        {% if artifact.photo3_path %}
         <div class="banner-middle-band">
           <div class="banner-timescale">
-            {% if artifact.photo3_path %}
-              <img
-                src="{{ url_for('static', filename=artifact.photo3_path) }}"
-                alt="Cenozoic geological timescale chart"
-              >
-            {% else %}
-              <img
-                src="{{ url_for('static', filename='img/geological-timescale.svg') }}"
-                alt="Cenozoic geological timescale chart"
-              >
-            {% endif %}
+            <img
+              src="{{ url_for('static', filename=artifact.photo3_path) }}"
+              alt="Cenozoic geological timescale chart"
+            >
           </div>
         </div>
+        {% endif %}
 
+        {% if artifact.photo2_path %}
         <div class="banner-map-wrap">
-          {% if artifact.photo2_path %}
-            <img
-              class="banner-map"
-              src="{{ url_for('static', filename=artifact.photo2_path) }}"
-              alt="Sampling site location map"
-            >
-          {% else %}
-            <div class="banner-map-placeholder">
-              <span>SAMPLING SITE</span>
-            </div>
-          {% endif %}
+          <img
+            class="banner-map"
+            src="{{ url_for('static', filename=artifact.photo2_path) }}"
+            alt="Sampling site location map"
+          >
         </div>
+        {% endif %}
       </div>
     </aside>
+    {% endif %}
 
     <div class="banner-content">
       <div class="banner-content-inner">

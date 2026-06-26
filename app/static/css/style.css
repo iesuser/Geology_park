@@ -271,6 +271,10 @@ main.container {
   align-items: start;
 }
 
+.banner-grid--no-visual {
+  grid-template-columns: 1fr;
+}
+
 .banner-visual {
   background: #f2c318;
   padding: 0;
@@ -304,6 +308,14 @@ main.container {
   width: fit-content;
   max-width: 100%;
   margin-inline: auto;
+}
+
+.banner-photo-wrap {
+  border-bottom: 2px solid #f2c318;
+}
+
+.banner-map-wrap {
+  border-top: 2px solid #f2c318;
 }
 
 .banner-rock-photo,
@@ -356,8 +368,6 @@ main.container {
   justify-content: center;
   align-items: center;
   background: #122827;
-  border-top: 2px solid #f2c318;
-  border-bottom: 2px solid #f2c318;
   padding: 1.4rem 2.5rem;
   flex: 0 0 auto;
   min-height: 200px;
