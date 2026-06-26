@@ -268,23 +268,29 @@ main.container {
   grid-template-columns: 32fr 68fr;
   width: 100%;
   min-height: 100vh;
-  align-items: stretch;
+  align-items: start;
+}
+
+.banner-grid--no-visual {
+  grid-template-columns: 1fr;
 }
 
 .banner-visual {
   background: #f2c318;
   padding: 0;
   display: flex;
-  align-items: stretch;
-  min-height: 100vh;
+  align-items: flex-start;
+  min-height: 0;
 }
 
 .banner-visual-panel {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  min-height: 100vh;
-  height: 100%;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 0;
+  height: auto;
+  margin-inline: auto;
   border: 16px solid #f2c318;
   background: #040606;
   overflow: hidden;
@@ -293,27 +299,42 @@ main.container {
 
 .banner-photo-wrap,
 .banner-map-wrap {
-  overflow: hidden;
-  background: #0a0a0a;
-  flex: 1 1 0;
-  min-height: 0;
+  overflow: visible;
+  background: transparent;
+  flex: 0 0 auto;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.banner-photo-wrap {
+  border-bottom: 2px solid #f2c318;
+}
+
+.banner-map-wrap {
+  border-top: 2px solid #f2c318;
 }
 
 .banner-rock-photo,
 .banner-map {
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
 }
 
 .banner-rock-photo {
-  min-height: 140px;
+  min-height: 0;
 }
 
 .banner-map {
-  min-height: 120px;
+  min-height: 0;
 }
 
 .banner-photo-placeholder,
@@ -347,8 +368,6 @@ main.container {
   justify-content: center;
   align-items: center;
   background: #122827;
-  border-top: 2px solid #f2c318;
-  border-bottom: 2px solid #f2c318;
   padding: 1.4rem 2.5rem;
   flex: 0 0 auto;
   min-height: 200px;
@@ -404,22 +423,25 @@ main.container {
 }
 
 .banner-timescale {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 172px;
-  height: 172px;
+  width: fit-content;
+  height: fit-content;
+  max-width: 200px;
+  max-height: 200px;
   flex-shrink: 0;
-  border: 4px solid #f2c318;
-  background: #122827;
+  border: 3px solid #f2c318;
+  background: transparent;
   overflow: hidden;
-  padding: 0.2rem;
-  box-sizing: border-box;
+  line-height: 0;
 }
 
 .banner-timescale img {
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
   object-position: center;
   display: block;
@@ -512,7 +534,7 @@ main.container {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   padding: 0.28rem 0.65rem;
-  margin: 0.35rem 0 1.25rem;
+  margin: 1rem 0 1.25rem;
   width: fit-content;
 }
 
@@ -1295,13 +1317,14 @@ code {
     min-height: 0;
   }
 
-  .banner-qr-stack,
   .banner-timescale {
-    width: min(180px, 44vw);
+    max-width: min(180px, 44vw);
+    max-height: min(180px, 44vw);
   }
 
   .banner-timescale {
-    height: min(180px, 44vw);
+    width: fit-content;
+    height: fit-content;
   }
 
   .banner-title {
@@ -1368,11 +1391,8 @@ code {
   }
 
   .banner-timescale {
-    width: min(160px, 42vw);
-  }
-
-  .banner-timescale {
-    height: min(160px, 42vw);
+    max-width: min(160px, 42vw);
+    max-height: min(160px, 42vw);
   }
 
   .banner-content-inner {
