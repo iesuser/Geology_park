@@ -69,7 +69,7 @@
       {% if artifact.title_ka or artifact.description_ka %}
         <section class="banner-lang banner-lang-ka" lang="ka">
           {% if artifact.title_ka %}
-            <h1 class="banner-title">{{ render_title(artifact.title_ka) }}</h1>
+            {{ render_title(artifact.title_ka) }}
           {% endif %}
           {% if artifact.elevation_m is not none %}
             <p class="elevation-badge">სიმაღლე ზღვის დონიდან - {{ artifact.elevation_m }} მ</p>
@@ -87,7 +87,7 @@
       {% if artifact.title_en or artifact.description_en %}
         <section class="banner-lang banner-lang-en" lang="en">
           {% if artifact.title_en %}
-            <h1 class="banner-title">{{ render_title(artifact.title_en) }}</h1>
+            {{ render_title(artifact.title_en) }}
           {% endif %}
           {% if artifact.elevation_m is not none %}
             <p class="elevation-badge">ELEVATION ABOVE SEA LEVEL - {{ artifact.elevation_m }} M</p>
